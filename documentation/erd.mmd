@@ -1,0 +1,107 @@
+erDiagram
+    direction TB
+
+    USERS {
+        Guid Id PK
+        string Email
+        string PasswordHash
+        string Role
+        string Name
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    COMPANIES {
+        Guid Id PK
+        string Name
+        string NIP
+        datetime CreatedAt
+        datetime UpdatedAt
+        string Token
+    }
+
+    COMPANY_ADDRESS {
+        Guid Id PK
+        string Street
+        string City
+        string ZipCode
+        double Latitude
+        double Longitude
+        datetime CreatedAt
+        datetime UpdatedAt
+        Guid CompanyId FK
+    }
+
+    CONTACTS {
+        Guid Id PK
+        string FirstName
+        string LastName
+        Guid ContactDetailsId FK
+        string Token
+        datetime CreatedAt
+        datetime UpdatedAt
+        Guid CompanyId FK
+        Guid OwnerId FK
+    }
+
+    CONTACTS_DETAILS {
+        Guid Id PK
+        string Email
+        string Phone
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    DEALS {
+        Guid Id PK
+        string Name
+        decimal Value
+        string Stage
+        int Probability
+        datetime CloseDate
+        Guid CompanyId FK
+        Guid OwnerId FK
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    TASKS {
+        Guid Id PK
+        string Title
+        string Description
+        datetime DueAt
+        Guid AssignedToId FK
+        Guid ContactId FK
+        Guid DealId FK
+        string Token
+        datetime CreatedAt
+        datetime UpdatedAt
+        %% TaskStatusEnum: ToDo, InProgress, Complete
+        %% TaskPriorityEnum: Low, Medium, High
+    }
+
+    NOTES {
+        Guid Id PK
+        string Content
+        datetime CreatedAt
+        Guid AuthorId FK
+        Guid ContactId FK
+        Guid DealId FK
+    }
+
+    %% RELACJE
+    USERS ||--o{ CONTACTS : owns
+    USERS ||--o{ DEALS : manages
+    USERS ||--o{ TASKS : assigned
+    USERS ||--o{ NOTES : writes
+
+    COMPANIES ||--o{ CONTACTS : has
+    COMPANIES ||--o{ DEALS : has
+    COMPANIES ||--|| COMPANY_ADDRESS : has
+
+    CONTACTS ||--|| CONTACTS_DETAILS : has
+    CONTACTS ||--o{ TASKS : related
+    CONTACTS ||--o{ NOTES : has
+
+    DEALS ||--o{ TASKS : related
+    DEALS ||--o{ NOTES : has
