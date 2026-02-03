@@ -1,12 +1,13 @@
 erDiagram
-    direction TB
+    direction LR
 
     USERS {
         Guid Id PK
         string Email
         string PasswordHash
         string Role
-        string Name
+        string ame
+        string 
         datetime CreatedAt
         datetime UpdatedAt
     }
@@ -55,7 +56,7 @@ erDiagram
     DEALS {
         Guid Id PK
         string Name
-        decimal Value
+        int Value %% wartość w groszach
         string Stage
         int Probability
         datetime CloseDate
@@ -87,7 +88,53 @@ erDiagram
         Guid AuthorId FK
         Guid ContactId FK
         Guid DealId FK
+        datetime CreatedAt
+        datetime UpdatedAt
     }
+
+     PRODUCT_CATEGORIES {
+        Guid Id PK
+        string Name %% nazwa np. Blachy i płaskowniki
+        string Description %% opis kategorii Wyroby stalowe płaskie
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    PRODUCT_TYPES {
+        Guid Id PK
+        string Name %% nazwa np. Blachy gorącowalcowane
+        string Description %% opis typu np. Blachy walcowane na gorąco o różnych grubościach i wymiarach
+        Guid CategoryId FK
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    PRODUCTS {
+        Guid Id PK
+        string Name %% nazwa np. Blacha gorącowalcowana
+        string SteelGrade %% typ stali np. S235JR, S355J2H
+        int Thickness %% grubość w mm
+        int Width %% szerokość w mm
+        int Length %% długość w mm
+        int Diameter %% średnica w mm
+        int Weight %% w kg
+        string Unit %% jednostka miary np. kg, m, szt.
+        int PricePerUnit %% cena za jednostkę miary w groszach
+        Guid ProductTypeId FK
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
+    DEAL_PRODUCTS {
+        Guid Id PK
+        Guid DealId FK
+        Guid ProductId FK
+        int Quantity %% ilość w najmniejszej jednostce (np. sztuk, kg, m)
+        int UnitPrice %% cena za jednostkę miary w groszach
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+
 
     %% RELACJE
     USERS ||--o{ CONTACTS : owns
@@ -105,3 +152,8 @@ erDiagram
 
     DEALS ||--o{ TASKS : related
     DEALS ||--o{ NOTES : has
+
+    PRODUCT_CATEGORIES ||--o{ PRODUCT_TYPES : contains
+    PRODUCT_TYPES ||--o{ PRODUCTS : defines
+    DEALS ||--o{ DEAL_PRODUCTS : includes
+    PRODUCTS ||--o{ DEAL_PRODUCTS : sold_in
